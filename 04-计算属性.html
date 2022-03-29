@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .active{
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h2>
+            {{title}}
+        </h2>
+        <input type="text" v-model="cource" @keydown.enter="addToCources">
+        <button @click="addToCources()">添加</button>
+        <p v-if="courses.length === 0">没有任何内容</p>
+        <div v-else class="cources-list">
+            <div v-for="item in courses" :key="item.index" :class="{active: selectedCource === item}" @click="selectedCource = item">
+                {{ item }}
+            </div>
+        </div>
+        <!-- <div v-for="item in courses" :key="item.index" :style="{backgroundColor: selectedCource === item? '#ccc' : 'transparent'}" @click="selectedCource = item">
+            {{ item }}
+        </div> -->
+        <p>
+            <!-- 计算属性 -->
+            课程总数： {{total}}
+            <br>
+            <!-- 侦听器 -->
+            课程总数：{{totalCount}}
+        </p>
+    </div>
+    <script src="vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    title: '开课吧购物车',
+                    cource: '',
+                    courses: ['web全栈', 'web高级'],
+                    selectedCource: '',
+                    totalCount: 0
+                }
+            },
+            methods: {
+                addToCources() {
+                    this.courses.push(this.cource)
+                    this.cource = ''
+                }
+            },
+            computed: {
+                // 计算属性有缓存性，如果没有发生变化，则页面不重新渲染
+                total() {
+                    return this.courses.length
+                }
+            },
+            // computed适合，一个值由其他值得来，依赖的值变了，他也要变，是个多个值影响一个值
+            // watch适合一个值变了，要去做一些事情，是个一个值影响多个值
+            // 默认情况下watch初始化时不执行
+            // watch: {
+            //     courses(newValue, oldValue) {
+            //         this.totalCount = newValue.length
+            //     }
+            // },
+            watch: {
+                courses: {
+                    immediate: true, // 立即执行
+                    // deep: true,// 深层
+                    handler(newValue, oldValue) {
+                        this.totalCount = newValue.length
+                    }
+                }
+            },
+        })
+    </script>
+</body>
+</html>

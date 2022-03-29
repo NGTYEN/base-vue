@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>08-动画01-JS动画</title>
+    <link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
+    <style>
+        .active{
+            background-color: #ccc;
+        }
+        .message-box{
+            padding:10px 20px;
+            width: 300px;
+        }
+        .success{
+            background: #4fc08d;
+            border: 1px solid #42b983;
+        }
+        .warning{
+            background: #d151a6;
+            border: 1px solid #d44c80;
+        }
+        .message-box-close{
+            float: right;
+        }
+        /* .fade-enter, .fade-leave-to{
+            opacity: 0;
+        } */
+        .fade-enter-active, .fade-leave-active{
+            transition: opacity 1.5s;
+        }
+        /* .fade-enter-to, .fade-leave{
+            opacity: 1;
+        } */
+    </style>
+</head>
+<body>
+    <div id="app">
+        <message ref="msgSuccess" class="success">
+            <template v-slot:title>恭喜</template>
+            <template>新增成功！</template>
+        </message>
+        <message ref="msgWarning" class="warning">
+            <template v-slot:title>警告</template>
+            <template>请输入课程名称！</template>
+        </message>
+        <h2>{{title}}</h2>
+        <button @click="$bus.$emit('message-close')">清空提示框</button>
+        <course-add v-model="course" @add-to-cources="addToCources"></course-add>
+        <p>
+            <input v-model.number="price" @keydown.enter="batchUpdate">
+            <button @click="batchUpdate">批量修改价格</button>
+        </p>
+        <course-list :courses="courses"></course-list>
+        <p>课程总数： {{total}}</p>
+    </div>
+    <script src="vue.js"></script>
+    <script>
+        Vue.prototype.$bus = new Vue()
+        Vue.component('message', {
+            data() {
+                return{
+                    show: false
+                }
+            },
+            template: 
+            `
+            <transition name="fade"
+                @before-enter="beforeEnter"
+                @enter="enter"
+                @before-leave="beforeLeave"
+                @leave="leave">  
+                <div v-if="show" class="message-box">
+                    <strong><slot name="title" title="来自message的title"></slot></strong>
+                    <slot></slot>
+                    <span class="message-box-close" @click="toggle">X</span>
+                </div>
+            </transition>
+            `,
+            mounted() {
+                this.$bus.$on('message-close', () => {
+                    console.log(111)
+                    this.toggle
+                })
+            },
+            methods: {
+                toggle() {
+                    this.show = !this.show
+                },
+                beforeEnter(el) {
+                    el.style.opacity = 0
+                },
+                enter(el, done) {
+                    // 触发页面回流
+                    document.body.offsetHeight;
+                    el.style.opacity = 1
+                    // 监听动画结束事件，并执行done
+                    el.addEventListener('transitionend', done)
+                },
+                beforeLeave(el) {
+                    el.style.opacity = 1
+                },
+                leave(el, done) {
+                    // 触发页面回流
+                    document.body.offsetHeight;
+                    el.style.opacity = 0
+                    // 监听动画结束事件，并执行done
+                    el.addEventListener('transitionend', done)
+                }
+            }
+        })
+        Vue.component('course-add', {
+            props: ['value'],
+            template: 
+            `
+            <div>
+                <input ref="inp" type="text" :value="value" @input="onInput" @keydown.enter="addToCources">
+                <button @click="addToCources()">添加</button>
+            </div>
+            `,
+            methods: {
+                addToCources() {
+                    this.$emit('add-to-cources')
+                },
+                onInput(e) {
+                    this.$emit('input', e.target.value)
+                }
+            },
+            mounted() {
+                this.$refs.inp.focus()
+            }
+        })
+        Vue.component('course-list', {
+            data() {
+                return {
+                    selectedCource: ''
+                }
+            },
+            props: {
+                courses: {
+                    type: Array,
+                    default: []
+                }
+            },
+            template: 
+            `
+            <div>
+                <p v-if="courses.length === 0">没有任何内容</p>
+                <div v-else class="cources-list">
+                    <div v-for="item in courses" :key="item.index" :class="{active: selectedCource === item.name}" @click="selectedCource = item.name">
+                        {{ item.name }}- ￥{{ item.price }}
+                    </div>
+                </div>
+            </div>
+            `
+        })
+        function getCourses() {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve([{ name: 'web全栈' }, { name: 'web高级' }])
+                },1000);
+            })
+        }
+        const app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    title: '开课吧购物车',
+                    course: '',
+                    courses: [],
+                    totalCount: 0,
+                    isShowSuccess: false,
+                    isShowWaining: false,
+                    price: 0
+                }
+            },
+            async created(){
+                 const courses = await getCourses()
+                 this.courses = courses
+                 this.batchUpdate()
+            },
+            methods: {
+                addToCources() {
+                    if(this.course) {
+                        this.courses.push({name: this.course})
+                        this.batchUpdate()
+                        this.course = ''
+                        this.$refs.msgSuccess.toggle()
+                    } else {
+                        this.$refs.msgWarning.toggle()
+                    }
+                },
+                batchUpdate() {
+                    this.courses.forEach(course => {
+                        // Vue.set(course, 'price', this.price)
+                        this.$set(course, 'price', this.price)
+                    });
+                }
+            },
+            computed: {
+                total() {
+                    return this.courses.length
+                }
+            },
+            watch: {
+                courses: {
+                    immediate: true,
+                    handler(newValue, oldValue) {
+                        this.totalCount = newValue.length
+                    }
+                }
+            },
+        })
+    </script>
+</body>
+</html>

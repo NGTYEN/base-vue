@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>05-生命周期</title>
+    <style>
+        .active{
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h2>
+            {{title}}
+        </h2>
+        <course-add @add-to-cources="addToCources"></course-add>
+        <course-list :courses="courses"></course-list>
+        <p>课程总数： {{total}}</p>
+    </div>
+    <script src="vue.js"></script>
+    <script>
+        Vue.component('course-add', {
+            data() {
+                return{
+                    course: ''
+                }
+            },
+            template: 
+            `
+            <div>
+                <input type="text" v-model="cource" @keydown.enter="addToCources">
+                <button @click="addToCources()">添加</button>
+            </div>
+            `,
+            methods: {
+                addToCources() {
+                    this.$emit('add-to-cources', this.cource)
+                    this.cource = ''
+                }
+            }
+        })
+        Vue.component('course-list', {
+            data() {
+                return {
+                    selectedCource: ''
+                }
+            },
+            props: {
+                courses: {
+                    type: Array,
+                    default: []
+                }
+            },
+            template: 
+            `
+            <div>
+                <p v-if="courses.length === 0">没有任何内容</p>
+                <div v-else class="cources-list">
+                    <div v-for="item in courses" :key="item.index" :class="{active: selectedCource === item}" @click="selectedCource = item">
+                        {{ item }}
+                    </div>
+                </div>
+            </div>
+            `
+        })
+        function getCourses() {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve(['web全栈', 'web高级'])
+                },1000);
+            })
+        }
+        const app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    title: '开课吧购物车',
+                    cource: '',
+                    courses: [],
+                    totalCount: 0
+                }
+            },
+            async created(){
+                 const courses = await getCourses()
+                 this.courses = courses
+            },
+            methods: {
+                addToCources(cource) {
+                    this.courses.push(cource)
+                }
+            },
+            computed: {
+                total() {
+                    return this.courses.length
+                }
+            },
+            watch: {
+                courses: {
+                    immediate: true,
+                    handler(newValue, oldValue) {
+                        this.totalCount = newValue.length
+                    }
+                }
+            },
+        })
+    </script>
+</body>
+</html>

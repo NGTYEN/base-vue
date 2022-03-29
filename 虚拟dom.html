@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .active{
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- <h2>
+            {{title}}
+        </h2>
+        <input type="text" v-model="cource" @keydown.enter="addToCources">
+        <button @click="addToCources()">添加111</button>
+        <p v-if="courses.length === 0">没有任何内容</p>
+        <div v-else class="cources-list">
+            <div v-for="item in courses" :key="item.index" :class="{active: selectedCource === item}" @click="selectedCource = item">
+                {{ item }}
+            </div>
+        </div> -->
+        <!-- <div v-for="item in courses" :key="item.index" :style="{backgroundColor: selectedCource === item? '#ccc' : 'transparent'}" @click="selectedCource = item">
+            {{ item }}
+        </div> -->
+    </div>
+    <script src="vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    title: '开课吧购物车',
+                    cource: '',
+                    courses: ['web全栈', 'web高级'],
+                    selectedCource: ''
+                }
+            },
+            methods: {
+                addToCources() {
+                    this.courses.push(this.cource)
+                    this.cource = ''
+                }
+            },
+            render() {
+                with(this) {
+                    return _c('div',{attrs:{"id":"app"}},[_c('h2',[_v("\n            "+_s(title)+"\n        ")]),_v(" "),_c('input',{directives:[{name:"model",rawName:"v-model",value:(cource),expression:"cource"}],attrs:{"type":"text"},domProps:{"value":(cource)},on:{"keydown":function($event){if(!$event.type.indexOf('key')&&_k($event.keyCode,"enter",13,$event.key,"Enter"))return null;return addToCources.apply(null, arguments)},"input":function($event){if($event.target.composing)return;cource=$event.target.value}}}),_v(" "),_c('button',{on:{"click":function($event){return addToCources()}}},[_v("添加111")]),_v(" "),(courses.length === 0)?_c('p',[_v("没有任何内容")]):_c('div',{staticClass:"cources-list"},_l((courses),function(item){return _c('div',{key:item.index,class:{active: selectedCource === item},on:{"click":function($event){selectedCource = item}}},[_v("\n                "+_s(item)+"\n            ")])}),0)])
+                }
+            }
+        })
+    </script>
+</body>
+</html>

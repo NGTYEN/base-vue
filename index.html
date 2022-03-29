@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .active{
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h2>
+            {{title}}
+        </h2>
+        <input type="text" v-model="cource" @keydown.enter="addToCources">
+        <button @click="addToCources()">添加</button>
+        <p v-if="courses.length === 0">没有任何内容</p>
+        <div v-else class="cources-list">
+            <div v-for="item in courses" :key="item.index" :class="{active: selectedCource === item}" @click="selectedCource = item">
+                {{ item }}
+            </div>
+        </div>
+        <!-- <div v-for="item in courses" :key="item.index" :style="{backgroundColor: selectedCource === item? '#ccc' : 'transparent'}" @click="selectedCource = item">
+            {{ item }}
+        </div> -->
+    </div>
+    <script src="vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data() {
+                return {
+                    title: '开课吧购物车',
+                    cource: '',
+                    courses: ['web全栈', 'web高级'],
+                    selectedCource: ''
+                }
+            },
+            methods: {
+                addToCources() {
+                    this.courses.push(this.cource)
+                    this.cource = ''
+                }
+            },
+        })
+    </script>
+</body>
+</html>
