@@ -17,7 +17,7 @@
 import Message from "./components/message.vue";
 import CourseList from "./components/CourseList.vue";
 import CourseAdd from "./components/CourseAdd.vue";
-import { getCourses } from "./api/cource.js";
+import { getCourses } from "./api/course.js";
 
 export default {
   name: "App",
@@ -45,7 +45,7 @@ export default {
   methods: {
     batchUpdate() {
       this.courses.forEach((course) => {
-        Object.assign(course, { price: this.price });
+        Object.assign(course, { price: course.price ? course.price : this.price });
       });
     },
     addToCourses() {

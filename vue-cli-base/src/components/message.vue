@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import helloMixin from '../api/helloMixin'
+import helloMixin from "../api/helloMixin";
 export default {
   mixins: [helloMixin],
   data() {
@@ -32,5 +32,27 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+.message-box {
+  padding: 10px 20px;
+  width: 300px;
+}
+
+.message-box-close {
+  float: right;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 1.5s;
+}
+
+.fade-enter-to,
+.fade-leave {
+  opacity: 1;
+}
 </style>

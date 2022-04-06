@@ -1,21 +1,23 @@
 <template>
-  <message ref="msgSuccess" class="success">
-    <template v-slot:title>恭喜</template>
-    <template>新增成功！</template>
-  </message>
-  <message ref="msgWarning" class="warning">
-    <template v-slot:title>警告</template>
-    <template>请输入课程名称！</template>
-  </message>
-  <course-add v-model="course" @add-to-cources="addToCourses"></course-add>
-  <course-list :courses="courses"></course-list>
+  <div>
+    <message ref="msgSuccess" class="success">
+      <template v-slot:title>恭喜</template>
+      <template>新增成功！</template>
+    </message>
+    <message ref="msgWarning" class="warning">
+      <template v-slot:title>警告</template>
+      <template>请输入课程名称！</template>
+    </message>
+    <course-add v-model="course" @add-to-cources="addToCourses"></course-add>
+    <course-list :courses="courses"></course-list>
+  </div>
 </template>
 
 <script>
-import Message from "./components/message";
-import CourseList from "./components/CourseList.vue";
-import CourseAdd from "./components/CourseAdd.vue";
-import { getCourses } from "./api/cource.js";
+import Message from "@/components/message.vue";
+import CourseList from "@/components/CourseList.vue";
+import CourseAdd from "@/components/CourseAdd.vue";
+import { getCourses } from "@/api/cource.js";
 
 export default {
   name: "App",
@@ -68,5 +70,16 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.success {
+  background: #4fc08d;
+  /* border: 1px solid #42b983; */
+  width: 400px;
+}
+
+.warning {
+  background: #d151a6;
+  /* border: 1px solid #d44c80; */
+  width: 400px;
 }
 </style>

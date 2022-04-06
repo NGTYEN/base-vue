@@ -1,13 +1,13 @@
 <template>
   <div>
     <p v-if="courses.length === 0">没有任何内容</p>
-    <div v-else class="cources-list">
+    <div v-else :class="$style.red">
       <transition-group name="fade">
         <div
           v-for="item in courses"
           :key="item.name"
-          :class="{ active: selectedCource === item.name }"
-          @click="selectedCource = item.name"
+          :class="{ [$style.active]: selectedCourse === item.name }"
+          @click="selectedCourse = item.name"
         >
           {{ item.name }}- {{ price(item.price, "$") }}
         </div>
@@ -18,11 +18,6 @@
 
 <script>
 export default {
-  data() {
-    return {
-      selectedCource: "",
-    };
-  },
   props: {
     courses: {
       type: Array,
@@ -30,6 +25,14 @@ export default {
           return []
       },
     },
+  },
+  data() {
+    return {
+      selectedCourse: "",
+    };
+  },
+  created() {
+    console.log(this.courses)
   },
   methods: {
       price(price, currency) {
@@ -39,8 +42,11 @@ export default {
 };
 </script>
 
-<style scoped>
+<style module scoped>
 .active {
   background-color: #ccc;
+}
+.red {
+  color: red;
 }
 </style>

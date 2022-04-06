@@ -1,4 +1,4 @@
-# base_vue_study
+# vue-cli-base
 
 ## Project setup
 ```
