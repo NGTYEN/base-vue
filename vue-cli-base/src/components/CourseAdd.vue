@@ -6,7 +6,6 @@
       :value="value"
       @input="onInput"
       @keydown.enter="addToCources"
-      v-focus
     />
     <button @click="addToCourses()">添加</button>
   </div>
