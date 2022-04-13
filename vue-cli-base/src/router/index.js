@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/views/Home.vue'
+import store from '@/store'
 
 Vue.use(Router)
 
@@ -67,7 +68,20 @@ const router = new Router({
 // })
 
 router.beforeEach((to, from, next) => {
-  if(window.isLogin) {
+  // if(window.isLogin) {
+  //   if(to.path === '/login'){
+  //     next('/')
+  //   } else{
+  //     next()
+  //   }
+  // } else {
+  //   if(to.path === '/login'){
+  //     next()
+  //   } else{
+  //     next('/login?redirect='+to.fullPath)
+  //   }
+  // }
+  if(store.state.user.isLogin) {
     if(to.path === '/login'){
       next('/')
     } else{

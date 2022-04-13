@@ -4,12 +4,22 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/admin">About</router-link>
     </div>
+    <span v-if="isLogin">{{ welcome }}<button>注销</button></span>
     <keep-alive include="adminPage">
       <router-view/>
     </keep-alive>
   </div>
 </template>
 
+<script>
+import { mapState, mapGetters } from 'vuex'
+export default {
+  computed: {
+    ...mapState('user',['isLogin']),
+    ...mapGetters('user', ['welcome'])
+  },
+}
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
